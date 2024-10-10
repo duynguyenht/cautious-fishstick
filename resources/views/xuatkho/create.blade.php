@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <div class="nk-block">
-                        <form action="#" method="POST" id="form-create">
+                        <form action="{{route('xuat-kho.create')}}" method="GET" id="form-create">
                             @csrf
                             <div class="row g-gs">
                                 <div class="col-xxl-12">
@@ -100,12 +100,6 @@
                                         </div>
                                         <div class="gap-col">
                                             <ul class="d-flex justify-content-end gap g-3">
-                                                <li>
-                                                    <button id="btn-submit" type="submit" class="btn btn-primary d-md-inline-flex">
-                                                        <em class="icon ni ni-plus"></em>
-                                                        <span>Xác nhận</span>
-                                                    </button>
-                                                </li>
                                                 <li style="margin-left: 10px">
                                                     <button id="btn-export" type="submit" class="btn btn-primary d-md-inline-flex">
                                                         <em class="icon ni ni-file-download"></em>
@@ -290,13 +284,9 @@
                     .appendTo(ul);
             };
 
-            const btnSubmit = document.getElementById('btn-submit')
             const btnExport = document.getElementById('btn-export')
             let apiUrl = ''
 
-            btnSubmit.onclick = function() {
-                apiUrl = '{{ route('api.xuat-kho.store') }}'
-            }
 
             btnExport.onclick = function() {
                 apiUrl = '{{ route('xuat-kho.export') }}'
@@ -311,7 +301,7 @@
                 const dia_chi = $('input[name="dia_chi"]').val()
                 const mo_ta = quill.getContents().ops[0].insert
                 const id_user = {{ auth()->user()->id }}
-                console.log(mo_ta);
+                console.log(mo_ta)
 
                 let data = [{
                     ma_phieu_xuat: ma_phieu_xuat,
@@ -321,7 +311,7 @@
                     mo_ta: mo_ta === "\n" ? '' : mo_ta,
                     id_user: id_user
                 }]
-
+                console.log(data)
                 $('tbody tr').each(function() {
                     const item = {
                         id_chi_tiet_hang_hoa: $(this).find('.hang-hoa').val(),
@@ -332,7 +322,7 @@
                 });
 
                 const token = '{{ csrf_token() }}'
-
+                console.log(apiUrl)
                 $.ajax({
                     type: 'POST',
                     url: apiUrl,
@@ -342,6 +332,7 @@
                     },
                     data: JSON.stringify(data),
                     success: function(response) {
+                        console.log(response);
                         if (response.type === 'success') {
                             Swal.fire({
                                 title: 'Thành công!',
@@ -373,6 +364,7 @@
                         }
                     },
                     error: function(response) {
+                        console.log(response);
                         var errors = response.responseJSON.errors;
                         var errorText = '';
 

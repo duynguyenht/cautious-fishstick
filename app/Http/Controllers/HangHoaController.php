@@ -69,10 +69,11 @@ class HangHoaController extends Controller
 
         if ($hang_hoa) {
             Alert::success('Thành công', 'Thêm mới hàng hóa thành công!');
+
             return redirect()->route('hang-hoa.index');
         } else {
             if ($request->hasFile('change_img')) {
-                unlink(storage_path('app/public/images/hanghoa/' . $file_name));
+                unlink(storage_path('app/public/images/hanghoa/'.$file_name));
             }
             Alert::error('Thất bại', 'Thêm mới thất bại do đã tồn tại hàng hóa từ trước hoặc do lỗi!')->autoClose(5000);
             return back();
@@ -132,6 +133,8 @@ class HangHoaController extends Controller
             $path = $request->file('change_img')->storeAs('public/images/hanghoa', $hang_hoa->img);
         }
 
+        $ma_hang_hoa = $hang_hoa->ma_hang_hoa;
+
         $mo_ta = json_decode($request->mo_ta)->ops[0]->insert;
 
         $status = $hang_hoa->update([
@@ -144,9 +147,11 @@ class HangHoaController extends Controller
             'mo_ta' => strlen($mo_ta) == 0 ? 'Không có mô tả cụ thể!' : $mo_ta
         ]);
 
+        ChiTietHangHoa::where('ma_hang_hoa', $ma_hang_hoa)->update(['ma_hang_hoa' => $data['ma_hang_hoa']]);
+
         if ($status) {
             if ($request->hasFile('change_img') && $file_name != $request->change_img && $file_name != 'hanghoa.jpg') {
-                unlink(storage_path('app/public/images/hanghoa'.$file_name));
+                //unlink(storage_path('app/public/images/hanghoa'.$file_name));
             };
 
             Alert::success('Thành công', 'Sửa thông tin hàng hóa thành công!');

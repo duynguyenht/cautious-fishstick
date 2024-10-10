@@ -10,6 +10,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Monolog\Logger;
+use Psy\Readline\Hoa\Console;
 
 class XuatKhoController extends Controller
 {
@@ -57,7 +59,10 @@ class XuatKhoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        print("hello");
+        Console.log("hello");
+        $logger = new Logger('name');
+        $logger->info("hello");
     }
 
     /**
@@ -74,13 +79,15 @@ class XuatKhoController extends Controller
 
     public function export(Request $request)
     {
+//        echo 'Exporting data from XuatKhoController';
         $data = json_decode($request->getContent(), true);
         $dataExport = [];
         $errors = [];
+//        $errors[] = "Có lỗi xảy ra trong quá trình nhập dữ liệu. Vui lòng thử lại sau!";
+        // if (count($data) < 2) {
+        //     return response()->json(['message'=> 'Không có dữ liệu để xuất!']);
+        // }
 
-        if (count($data) < 2) {
-            return response()->json(['message'=> 'Không có dữ liệu để xuất!']);
-        }
 
         $validator = Validator::make($data[0], [
             'ma_phieu_xuat' => 'required|max:20|unique:phieu_xuat,ma_phieu_xuat',
